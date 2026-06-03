@@ -1,0 +1,36 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_gap_detection",
+      "description": "Scan result with obvious gaps, requiring a single discovery question.",
+      "input": {
+        "detected_languages": ["Python", "Shell"],
+        "files": ["main.py", "utils.py", "scripts/run.sh"],
+        "readme_found": true,
+        "readme_summary": "A simple CLI tool to query APIs."
+      },
+      "expected_outcome": "The skill must output list of gaps (e.g. database design, system goals, vague scope) and ask exactly one question."
+    },
+    {
+      "id": "fixture_2_tdd_compilation",
+      "description": "Full information given, requesting final TDD compilation.",
+      "input": {
+        "scan": {
+          "detected_languages": ["Python", "Shell"],
+          "files": ["main.py", "utils.py", "scripts/run.sh"],
+          "readme_found": true,
+          "readme_summary": "A simple CLI tool to query APIs."
+        },
+        "quiz_answers": "Goal is to query GitHub API for user repo counts. No DB, just local cache in JSON. Decided on Python for rich requests library. Trade-off: rate limits, we handle it by simple sleep retry.",
+        "request": "Compile the final TDD."
+      },
+      "expected_outcome": "Generated TECHNICAL_DESIGN.md conforming to the template, containing all 6 sections (Metadata, 1. Introduction, 2. System Architecture, 3. Data & Storage, 4. Component Design, 5. Trade-Offs, 6. Risks/Roadmap) and a valid Mermaid diagram."
+    },
+    {
+      "id": "fixture_3_one_question_rule",
+      "description": "Testing the one-question-at-a-time rule for interactive mode.",
+      "input": "Let's start the discovery quiz.",
+      "expected_outcome": "Asks exactly one question to get the quiz started, and does not list multiple questions."
+    }
+  ]
+}

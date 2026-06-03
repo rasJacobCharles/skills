@@ -1,0 +1,28 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_spelling_vocabulary",
+      "description": "Standard US spelling and vocabulary.",
+      "input": "The traveler took the elevator to the apartment. She was color-blind but loved the theater.",
+      "expected_outcome": "The traveller took the lift to the flat. She was colour-blind but loved the theatre."
+    },
+    {
+      "id": "fixture_2_case_preservation",
+      "description": "US spelling in different case modes.",
+      "input": "ORGANIZATION, Organization, organization. Color, COLOR, color.",
+      "expected_outcome": "ORGANISATION, Organisation, organisation. Colour, COLOUR, colour."
+    },
+    {
+      "id": "fixture_3_exception_safety",
+      "description": "Sentences containing potential exception false-positives.",
+      "input": "Please check the size of the prize before you seize it.",
+      "expected_outcome": "Please check the size of the prize before you seize it."
+    },
+    {
+      "id": "fixture_4_measurement_conversion",
+      "description": "US customary units to be converted.",
+      "input": "The baby weighed 8 pounds and was 20 inches long. The temperature was 98 degrees Fahrenheit.",
+      "expected_outcome": "The baby weighed 3.6 kg [or 3.63 kg] and was 50.8 cm [or 51 cm] long. The temperature was 36.7 degrees Celsius [or 37 degrees Celsius]."
+    }
+  ]
+}
