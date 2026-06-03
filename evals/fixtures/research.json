@@ -1,0 +1,34 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_drop_recommendation",
+      "description": "An unfeasible laser drone coffee delivery app idea.",
+      "input": "An app that uses blockchain and lasers to deliver hot coffee to office workers via autonomous drones in high-wind city centers. Charges $2 per cup. The drones cost $50k each.",
+      "expected_outcome": "Recommendation must be DROP, identifying high drone cost, regulatory barriers, and wind hazards."
+    },
+    {
+      "id": "fixture_2_start_recommendation",
+      "description": "A feasible freelance proofreading platform idea.",
+      "input": "An online platform connecting local freelance proofreaders with college students in the same city for quick essay reviews. Cheap pricing, low overhead, uses simple web interface.",
+      "expected_outcome": "Recommendation must be START, with concrete next steps (landing page, pilot cohort)."
+    },
+    {
+      "id": "fixture_3_mixed_methodology",
+      "description": "Combining user feelings and store visitor counts.",
+      "input": "I want to study how customers feel about our new store layout and also count how many people enter each section.",
+      "expected_outcome": "Classified as Mixed methodology, explaining that feelings are qualitative and counts are quantitative."
+    },
+    {
+      "id": "fixture_4_quiz_progression",
+      "description": "Testing the one-question-at-a-time rule for user interviews.",
+      "input": "Let's do the interview quiz.",
+      "expected_outcome": "Asks exactly one question to initiate the quiz."
+    },
+    {
+      "id": "fixture_5_dashboard_generation",
+      "description": "Overview dashboard generation.",
+      "input": "Create the final summary overview document.",
+      "expected_outcome": "Generates 00_Overview.md containing YAML frontmatter and Wikilinks (e.g. [[01_Research_Design]])."
+    }
+  ]
+}
