@@ -1,6 +1,6 @@
 # Multi-Agent Code Review Skill
 
-This folder contains the **Multi-Agent Code Review** skill for AI coding assistants. It teaches the agent how to coordinate a feedback loop across seven independent, specialized agents to optimize code quality, enforce security, and validate requirements.
+This folder contains the **Multi-Agent Code Review** skill for AI coding assistants. It teaches the agent how to coordinate a feedback loop across seven independent, specialised agents to optimise code quality, enforce security, and validate requirements.
 
 ---
 
