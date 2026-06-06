@@ -1,0 +1,40 @@
+{
+  "request": {
+    "task_description": "Validate PHP class assertions and mocking standards",
+    "input_data": "<?php class MyServiceTest extends TestCase { ... }"
+  },
+  "payload": {
+    "current_output": "<?php class MyServiceTest extends TestCase { ... }",
+    "metadata": {
+      "has_strict_types": true,
+      "is_final": true,
+      "mocks_count": 2
+    }
+  },
+  "telemetry": {
+    "execution_count": {
+      "SyntaxCheckHandler": 1,
+      "StaticAnalysisHandler": 1,
+      "MockCheckHandler": 1
+    },
+    "current_step": 3
+  },
+  "log": [
+    {
+      "handler": "SyntaxCheckHandler",
+      "action": "Verified basic PHP syntax correctness.",
+      "timestamp": "2026-06-06T16:42:00Z"
+    },
+    {
+      "handler": "StaticAnalysisHandler",
+      "action": "Checked code quality standards and formatting namespaces.",
+      "timestamp": "2026-06-06T16:42:05Z"
+    },
+    {
+      "handler": "MockCheckHandler",
+      "action": "Verified only createMock and createStub are used.",
+      "timestamp": "2026-06-06T16:42:10Z"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,33 @@
+{
+  "request": {
+    "task_description": "Clean whitespace and filter profanity",
+    "input_data": "   This is a damn good example!   "
+  },
+  "payload": {
+    "current_output": "This is a **** good example!",
+    "metadata": {
+      "original_length": 34,
+      "final_length": 28
+    }
+  },
+  "telemetry": {
+    "execution_count": {
+      "CleanTextHandler": 1,
+      "ProfanityFilterHandler": 1
+    },
+    "current_step": 2
+  },
+  "log": [
+    {
+      "handler": "CleanTextHandler",
+      "action": "Trimmed leading and trailing whitespaces.",
+      "timestamp": "2026-06-06T16:40:00Z"
+    },
+    {
+      "handler": "ProfanityFilterHandler",
+      "action": "Detected profanity 'damn' and replaced with asterisks.",
+      "timestamp": "2026-06-06T16:40:02Z"
+    }
+  ],
+  "errors": []
+}

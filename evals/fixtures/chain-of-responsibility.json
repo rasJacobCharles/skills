@@ -1,0 +1,52 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_linear_pipeline",
+      "description": "Text cleaning pipeline containing CleanTextHandler and ProfanityFilterHandler.",
+      "input": {
+        "workspace_root": "./",
+        "pipeline_name": "TextCleaningPipeline",
+        "run_id": "run_101",
+        "files_on_disk": {
+          ".cor/pipelines/TextCleaningPipeline/pipeline.yaml": "pipeline_name: TextCleaningPipeline\npipeline_execution_order:\n  - handler: CleanTextHandler\n    next_handler: ProfanityFilterHandler\n  - handler: ProfanityFilterHandler\n    next_handler: null\n",
+          ".cor/pipelines/TextCleaningPipeline/handlers/CleanTextHandler.md": "---\nname: CleanTextHandler\nnext_handler: ProfanityFilterHandler\n---\nTrim outer whitespace.",
+          ".cor/pipelines/TextCleaningPipeline/handlers/ProfanityFilterHandler.md": "---\nname: ProfanityFilterHandler\nnext_handler: null\n---\nReplace 'damn' with '****'.",
+          ".cor/runs/run_101/context.json": "{\n  \"request\": {\n    \"task_description\": \"Clean whitespace and filter profanity\",\n    \"input_data\": \"   This is a damn good example!   \"\n  },\n  \"payload\": {\n    \"current_output\": \"   This is a damn good example!   \",\n    \"metadata\": {}\n  },\n  \"telemetry\": {\n    \"execution_count\": {},\n    \"current_step\": 0\n  },\n  \"log\": [],\n  \"errors\": []\n}"
+        }
+      },
+      "expected_outcome": "The agent loads pipeline configuration and handlers from `.cor/pipelines/TextCleaningPipeline/` relative to the workspace root, executes each step, and writes the mutated output and logs back to `.cor/runs/run_101/context.json` showing a final payload of 'This is a **** good example!'"
+    },
+    {
+      "id": "fixture_2_short_circuit",
+      "description": "A validation failure that triggers an emergency short-circuit.",
+      "input": {
+        "workspace_root": "./",
+        "pipeline_name": "SecurityPipeline",
+        "run_id": "run_202",
+        "files_on_disk": {
+          ".cor/pipelines/SecurityPipeline/pipeline.yaml": "pipeline_name: SecurityPipeline\npipeline_execution_order:\n  - handler: SecurityGuardrailHandler\n    next_handler: DBHandler\n  - handler: DBHandler\n    next_handler: null\n",
+          ".cor/pipelines/SecurityPipeline/handlers/SecurityGuardrailHandler.md": "---\nname: SecurityGuardrailHandler\nnext_handler: DBHandler\n---\nCheck for INSECURE_PAYLOAD. Fail if found.",
+          ".cor/pipelines/SecurityPipeline/handlers/DBHandler.md": "---\nname: DBHandler\nnext_handler: null\n---\nWrite payload to database.",
+          ".cor/runs/run_202/context.json": "{\n  \"request\": {\n    \"task_description\": \"Verify security of inputs\",\n    \"input_data\": \"INSECURE_PAYLOAD\"\n  },\n  \"payload\": {\n    \"current_output\": \"INSECURE_PAYLOAD\",\n    \"metadata\": {}\n  },\n  \"telemetry\": {\n    \"execution_count\": {},\n    \"current_step\": 0\n  },\n  \"log\": [],\n  \"errors\": []\n}"
+        }
+      },
+      "expected_outcome": "The agent loads configuration from `.cor/pipelines/SecurityPipeline/`, runs SecurityGuardrailHandler, halts the execution upon detecting the violation without executing DBHandler, and saves the error report into `.cor/runs/run_202/context.json` relative to the workspace root."
+    },
+    {
+      "id": "fixture_3_loop_prevention",
+      "description": "Circular routing that triggers a loop exception.",
+      "input": {
+        "workspace_root": "./",
+        "pipeline_name": "LoopingPipeline",
+        "run_id": "run_303",
+        "files_on_disk": {
+          ".cor/pipelines/LoopingPipeline/pipeline.yaml": "pipeline_name: LoopingPipeline\npipeline_execution_order:\n  - handler: StepOneHandler\n    next_handler: StepTwoHandler\n  - handler: StepTwoHandler\n    next_handler: StepOneHandler\n",
+          ".cor/pipelines/LoopingPipeline/handlers/StepOneHandler.md": "---\nname: StepOneHandler\nnext_handler: StepTwoHandler\n---\nIncrement step.",
+          ".cor/pipelines/LoopingPipeline/handlers/StepTwoHandler.md": "---\nname: StepTwoHandler\nnext_handler: StepOneHandler\n---\nIncrement step.",
+          ".cor/runs/run_303/context.json": "{\n  \"request\": {\n    \"task_description\": \"Process loop test\",\n    \"input_data\": \"loop_token\"\n  },\n  \"payload\": {\n    \"current_output\": \"loop_token\",\n    \"metadata\": {}\n  },\n  \"telemetry\": {\n    \"execution_count\": {\n      \"StepOneHandler\": 2,\n      \"StepTwoHandler\": 2\n    },\n    \"current_step\": 4\n  },\n  \"log\": [],\n  \"errors\": []\n}"
+        }
+      },
+      "expected_outcome": "The agent increments StepOneHandler execution count to 3, detects the loop condition, halts the pipeline, and updates `.cor/runs/run_303/context.json` relative to the workspace root to log a LoopException error."
+    }
+  ]
+}
