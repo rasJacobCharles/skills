@@ -1,0 +1,9 @@
+pipeline_name: CodeReviewPipeline
+pipeline_execution_order:
+  - handler: SyntaxCheckHandler
+    next_handler: StaticAnalysisHandler
+  - handler: StaticAnalysisHandler
+    next_handler: MockCheckHandler
+  - handler: MockCheckHandler
+    next_handler: null
+default_fallback_handler: FallbackHandler

@@ -1,0 +1,7 @@
+pipeline_name: TextCleaningPipeline
+pipeline_execution_order:
+  - handler: CleanTextHandler
+    next_handler: ProfanityFilterHandler
+  - handler: ProfanityFilterHandler
+    next_handler: null
+default_fallback_handler: FallbackHandler
