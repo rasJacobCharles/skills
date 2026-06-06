@@ -1,0 +1,43 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_optimisation_loop",
+      "description": "Standard code refactoring pipeline with formatting and hashing corrections.",
+      "input": {
+        "prompt": "Refactor user authentication handler.",
+        "source_code": "function login($u, $p) { return md5($p) === get_hash($u); }",
+        "local_sandbox": {
+          "goal": "Ensure secure hashing and clean naming.",
+          "fixture": "login('admin', 'password123')"
+        }
+      },
+      "expected_outcome": "The loop executes. The Security and Best Practices agents suggest changes (MD5 to password_verify, variables renamed). Local sandbox tests confirm progress. Final score improves from 60% to 90% (passing >80% threshold) within 2 loops."
+    },
+    {
+      "id": "fixture_2_security_guardrail",
+      "description": "SQL injection vulnerability check leading to short-circuit correction.",
+      "input": {
+        "prompt": "Execute database search for username.",
+        "source_code": "$db->query('SELECT * FROM users WHERE username = ' . $_GET['user']);",
+        "local_sandbox": {
+          "goal": "Verify input sanitisation and parameterisation.",
+          "fixture": "search('admin; DROP TABLE users;')"
+        }
+      },
+      "expected_outcome": "Security Agent identifies SQL injection, deducts 40 points (score drops to 60%), and flags it. The optimization loop suggests parameterized queries. The change is applied, and the score increases to 100%."
+    },
+    {
+      "id": "fixture_3_loop_limit",
+      "description": "Loop ceiling limit execution for a repeating optimization step.",
+      "input": {
+        "prompt": "Optimise calculation formula.",
+        "source_code": "function calc($x) { return $x * 1.15; }",
+        "local_sandbox": {
+          "goal": "Ensure precise floating point representation.",
+          "fixture": "calc(10.0)"
+        }
+      },
+      "expected_outcome": "The agents keep suggesting conflicting changes, causing the loop to repeat. Upon hitting the 5th loop cycle, the Coordinator halts execution and returns a LoopLimitExceeded report with history logs."
+    }
+  ]
+}
