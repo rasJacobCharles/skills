@@ -1,0 +1,5 @@
+{
+  "name": "review-commit",
+  "version": "0.1.0",
+  "description": "Use this skill to review and commit uncommitted git changes. It scans staged/unstaged changes, drafts a Conventional Commits message, filters out sensitive files, and asks for user approval before staging or committing."
+}

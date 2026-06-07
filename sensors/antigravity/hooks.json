@@ -1,0 +1,39 @@
+{
+  "skill-usage-log": {
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jacob/Projects/skills/sensors/antigravity/skill-usage-log.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "action-review": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jacob/Projects/skills/sensors/antigravity/action-review.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "goal-eval": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/jacob/Projects/skills/sensors/antigravity/goal-eval.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
