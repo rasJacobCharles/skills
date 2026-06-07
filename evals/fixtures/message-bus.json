@@ -1,0 +1,28 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_non_blocking_ingestion",
+      "description": "Verify that tasks are added to the queue without locking the main execution thread.",
+      "input": "We have three tasks: Task A, Task B, and Task C. We need to ingest them into the asynchronous message bus holding queue. Explain and demonstrate how the ingestion mechanism avoids locking the main execution thread during this operation.",
+      "expected_outcome": "The response must show a non-blocking ingestion mechanism, demonstrating that tasks are added to the holding queue asynchronously using techniques such as non-blocking promises, event loops, or background worker threads, allowing the main execution thread to remain free."
+    },
+    {
+      "id": "fixture_2_timestamp_sorting",
+      "description": "Confirm task sorting works accurately by injecting variations of timestamps out of order.",
+      "input": "Ingest three tasks that arrive out of order: Task X (timestamp: 2026-06-07T16:05:00Z), Task Y (timestamp: 2026-06-07T16:01:00Z), and Task Z (timestamp: 2026-06-07T16:03:00Z). Show the identity schema used, how the timestamp attribute is injected, and the sorted backlog queue.",
+      "expected_outcome": "The response must define a task identification schema where each task has a distinct timestamp attribute. It must sort the holding queue deterministically based on these timestamps (resulting in the sequence: Task Y, Task Z, Task X)."
+    },
+    {
+      "id": "fixture_3_strict_dequeuing",
+      "description": "Validate that tasks are dropped from the active queue immediately upon starting processing.",
+      "input": "A worker thread is ready to execute Task Y from the sorted queue. Explain the exact operational sequence when the worker starts execution, specifically focusing on how the queue avoids concurrent double-execution.",
+      "expected_outcome": "The response must show a strict de-queuing policy where the task is actively removed from the active polling queue at the exact moment a worker thread starts executing it, preventing other worker threads from accessing or executing the same task."
+    },
+    {
+      "id": "fixture_4_broadcast_to_subscribers",
+      "description": "Assert that multiple mock subscribers receive the event broadcast successfully when a parent task completes.",
+      "input": "Task Z completes execution on the message bus. There are three active subscribers registered for its completion: LoggerService, AuditService, and NotificationService. Show how the completion event is broadcasted to all three subscribers in a 1-to-many topology.",
+      "expected_outcome": "The response must demonstrate a 1-to-many broadcast model. It must show that when the parent task completes, a message/event is dispatched to all registered subscribers (LoggerService, AuditService, and NotificationService) to trigger downstream action tasks."
+    }
+  ]
+}
