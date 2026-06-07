@@ -1,0 +1,40 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_default_no_ticket",
+      "description": "Standard bug fix changes on main branch with default configuration (extractTicketFromBranch=false).",
+      "input": "Branch: main. Changes: modified src/utils.js (fixed off-by-one error in array index). Config: extractTicketFromBranch=false, allowScopeFromChanges=true.",
+      "expected_outcome": "Commit type 'fix', subject line under 50 characters in imperative mood, no scope/ticket in subject, and asks explicit approval question before executing any git add or commit."
+    },
+    {
+      "id": "fixture_2_branch_ticket_extraction",
+      "description": "Feature branch with ticket ID and config set to extractTicketFromBranch=true.",
+      "input": "Branch: feature/HVI-123_add_user_profile. Changes: new file src/components/UserProfile.jsx, modified src/App.jsx (imported UserProfile). Config: extractTicketFromBranch=true, allowScopeFromChanges=true.",
+      "expected_outcome": "Commit type 'feat', scope 'HVI-123' extracted from branch name, subject line under 50 characters starting with capital letter, and asks explicit approval question."
+    },
+    {
+      "id": "fixture_3_ticket_from_changes",
+      "description": "Branch extraction disabled but ticket ID can be worked out from code comments.",
+      "input": "Branch: main. Changes: modified src/payment.js (adds check for null payment intent, comments mention 'Fixes HVI-456'). Config: extractTicketFromBranch=false, allowScopeFromChanges=true.",
+      "expected_outcome": "Commit type 'fix', scope 'HVI-456' worked out from the changes, subject line under 50 characters in imperative mood, and asks explicit approval question."
+    },
+    {
+      "id": "fixture_4_sensitive_file_handling",
+      "description": "Some modified files are sensitive (e.g. .env.production). Should exclude them and only stage safe files.",
+      "input": "Branch: feature/HVI-789. Changes: modified src/config.js, modified .env.production. Config: extractTicketFromBranch=true.",
+      "expected_outcome": "Displays warning block listing .env.production as sensitive, drafts commit message with HVI-789 scope, asks approval, and specifies staging only the safe file (git add src/config.js, not git add -A)."
+    },
+    {
+      "id": "fixture_5_all_sensitive_early_exit",
+      "description": "All changed files are sensitive. Should trigger early exit.",
+      "input": "Branch: main. Changes: modified .env.local, modified keys/private.pem. Config: extractTicketFromBranch=false.",
+      "expected_outcome": "Displays warning listing all flagged files, informs user there is nothing safe to commit, and halts execution immediately without drafting a message or asking for approval."
+    },
+    {
+      "id": "fixture_6_custom_global_doc",
+      "description": "Dynamic adaptation to custom types or rules in global docs/commit-message.md.",
+      "input": "Branch: main. Changes: modified src/auth.js (fixed a security vulnerability). Config: extractTicketFromBranch=false. Custom docs/commit-message.md rules: custom type 'sec' defined for security patches.",
+      "expected_outcome": "Drafts commit message using the custom type 'sec' (e.g. 'sec: ...') as defined in the global commit-message.md, showing dynamic compliance with the documentation."
+    }
+  ]
+}
