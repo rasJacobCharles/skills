@@ -1,0 +1,22 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_1_deep_learning_paper",
+      "description": "Ingest a deep learning paper on the Transformer architecture.",
+      "input": "Ingest the paper: 'Attention Is All You Need' by Vaswani et al. (2017). It proposes the Transformer architecture, replacing recurrent models with self-attention mechanism. Results: BLEU of 28.4 on English-to-German. The parent is programming.md.",
+      "expected_outcome": "Generated page with capitalised name, correct frontmatter, bolded system overview, 5 numbered sections, a comparison table with WMT BLEU scores, conda environment setup commands in section 5, parent page updated with the link, and all written in British English."
+    },
+    {
+      "id": "fixture_2_database_tuning_blog",
+      "description": "Ingest a blog post on PostgreSQL memory tuning.",
+      "input": "Ingest this blog post: Tuning PostgreSQL memory settings. Set shared_buffers to 25% of RAM, work_mem to 64MB. This prevents disk thrashing. The parent is programming.md.",
+      "expected_outcome": "Generated page with correct layout, a parameters comparison table in section 4, setup commands in section 5, parent updated, and British English spelling used."
+    },
+    {
+      "id": "fixture_3_missing_parent_prompt",
+      "description": "Prompt for parent page when not provided.",
+      "input": "Ingest this paper: 'Retrieval-Augmented Generation' by Lewis et al.",
+      "expected_outcome": "Must ask the user to clarify or confirm the parent page before generating the file."
+    }
+  ]
+}
