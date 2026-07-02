@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+import sys
+import os
+import re
+import urllib.request
+import subprocess
+
+def install_and_import(package, import_name=None):
+    if import_name is None:
+        import_name = package
+    try:
+        return __import__(import_name)
+    except ImportError:
+        print(f"Installing {package}...", file=sys.stderr)
+        try:
+            # Run pip install in user mode to avoid permission issues
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", package], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return __import__(import_name)
+        except Exception as e:
+            print(f"Failed to install {package}: {e}", file=sys.stderr)
+            return None
+
+def fetch_youtube_transcript(video_id):
+    yta = install_and_import("youtube-transcript-api", "youtube_transcript_api")
+    if not yta:
+        return "Error: Could not install youtube-transcript-api package."
+    try:
+        srt = yta.YouTubeTranscriptApi.get_transcript(video_id)
+        transcript = " ".join([entry['text'] for entry in srt])
+        # Clean up spaces
+        transcript = re.sub(r'\s+', ' ', transcript)
+        return transcript
+    except Exception as e:
+        return f"Error fetching YouTube transcript for video {video_id}: {e}"
+
+def clean_html(html_content):
+    bs4 = install_and_import("beautifulsoup4", "bs4")
+    if bs4:
+        soup = bs4.BeautifulSoup(html_content, "html.parser")
+        # Remove scripts, styles, header, footer, nav
+        for s in soup(["script", "style", "nav", "header", "footer"]):
+            s.decompose()
+        # Return structured text
+        text = soup.get_text(separator="\n")
+        # Clean up empty lines and excess spacing
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        return "\n".join(lines)
+    else:
+        # Fallback basic regex cleaning if BS4 fails
+        text = re.sub(r'<script.*?</script>', '', html_content, flags=re.DOTALL)
+        text = re.sub(r'<style.*?</style>', '', text, flags=re.DOTALL)
+        text = re.sub(r'<[^>]+>', '', text)
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        return "\n".join(lines)
+
+def fetch_url(url):
+    try:
+        if url.lower().endswith('.pdf') or '/pdf/' in url.lower():
+            import tempfile
+            print(f"Downloading PDF URL...", file=sys.stderr)
+            req = urllib.request.Request(
+                url, 
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            )
+            with urllib.request.urlopen(req, timeout=30) as response:
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
+                    tmp.write(response.read())
+                    tmp_path = tmp.name
+            try:
+                text = extract_pdf_text(tmp_path)
+                return text
+            finally:
+                if os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+        else:
+            req = urllib.request.Request(
+                url, 
+                headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            )
+            with urllib.request.urlopen(req, timeout=15) as response:
+                html = response.read().decode('utf-8', errors='ignore')
+                return clean_html(html)
+    except Exception as e:
+        return f"Error fetching URL {url}: {e}"
+
+def extract_pdf_text(filepath):
+    pypdf = install_and_import("pypdf")
+    if not pypdf:
+        return "Error: Could not install pypdf package."
+    try:
+        reader = pypdf.PdfReader(filepath)
+        text = ""
+        for page in reader.pages:
+            t = page.extract_text()
+            if t:
+                text += t + "\n"
+        return text
+    except Exception as e:
+        return f"Error reading PDF {filepath}: {e}"
+
+def extract_youtube_id(url):
+    # Regex to extract YouTube video ID from various formats
+    pattern = r'(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
+    match = re.search(pattern, url)
+    return match.group(1) if match else None
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: ingest <url_or_filepath>")
+        sys.exit(1)
+        
+    source = sys.argv[1].strip()
+    
+    if os.path.exists(source):
+        # Local file
+        if source.lower().endswith('.pdf'):
+            print(extract_pdf_text(source))
+        else:
+            try:
+                with open(source, 'r', encoding='utf-8', errors='ignore') as f:
+                    print(f.read())
+            except Exception as e:
+                print(f"Error reading local file: {e}")
+    else:
+        # Check if it's a URL
+        yt_id = extract_youtube_id(source)
+        if yt_id:
+            print(f"Detected YouTube video ID: {yt_id}", file=sys.stderr)
+            print(fetch_youtube_transcript(yt_id))
+        elif source.startswith('http://') or source.startswith('https://'):
+            print(fetch_url(source))
+        else:
+            print(f"Input is neither a valid local file nor a URL: {source}")
+
+if __name__ == "__main__":
+    main()
